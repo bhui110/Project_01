@@ -23,17 +23,18 @@ def import_products():
             name = row["name"]
             price = float(row["price"])
             inventory = int(row["available"])
-            category_name = row["category"]
+            category = row["category"]
 
             # Check if category already exists
-            stmt = select(Category).where(Category.name == category_name)
-            existing_category = session.execute(stmt).scalar()
+            possible_category = session.execute(
+                select(Category).where(Category.name == category)
+            ).scalar()
 
-            if existing_category:
-                category_obj = existing_category
-            else:
-                category_obj = Category(name=category_name)
+            if not possible_category:
+                category_obj = Category(name=category)
                 session.add(category_obj)
+            else:
+                category_obj = possible_category
 
             # Create Product
             prod = Product(
