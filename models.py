@@ -6,17 +6,16 @@ class Base(DeclarativeBase):
     pass
 
 class Product(Base):
-    __tablename__ = "Products"
+    __tablename__ = "product"
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String)
     price = mapped_column(DECIMAL(10, 2))
     inventory = mapped_column(Integer, default=0)
 
-    # foreign key to category
-    category_id = mapped_column(ForeignKey("Categories.id"))
-    # many to many?
-    category = relationship("Category", back_populates="Products")
+    category_id = mapped_column(Integer, ForeignKey("categories.id"))
+    category = relationship("Category", back_populates="products")
+
 
     def __repr__(self):
         return f"[Product: {self.id}, Name: {self.name}, Price: {self.price}, Inventory: {self.inventory}]"
@@ -27,11 +26,11 @@ class Product(Base):
 
 
 # class Order(Base):
-#     __tablename__ = "Orders"
+#     __tablename__ = "orders"
     
 #     # Should have 2 foreign keys, refering to Customer and Product
-#     products = mapped_column(ForeignKey("Products.id"))
-#     customer = mapped_column(ForeignKey("Customers.id"))
+#     products = mapped_column(ForeignKey("products.id"))
+#     customer = mapped_column(ForeignKey("customers.id"))
 
 #     price = mapped_column(float)
 #     created = mapped_column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
@@ -40,7 +39,7 @@ class Product(Base):
 
 
 class Customer(Base):
-    __tablename__ = "Customers"
+    __tablename__ = "customers"
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String)
@@ -50,19 +49,17 @@ class Customer(Base):
     # orders = relationship("Order", back_populates="Customers")
 
     def __repr__(self):
-        return f"[Customer: id={self.id}, name={self.name}, phone={self.phone}, email={self.email}]"
+        return f"[Customer: id={self.id}, name={self.name}, phone={self.phone}]"
     
     def __str__(self):
         return f"The Customer {self.name} has phone number {self.phone}"
     
 class Category(Base):
-    __tablename__ = "Categories"
+    __tablename__ = "categories"
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String)
-    
-    # one to many
-    products = relationship("Product", back_populates="Categories")
+    products = relationship("Product", back_populates="category")
 
     def __repr__(self):
         return f"[Category: id={self.id}, Name={self.name}]"
