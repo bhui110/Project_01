@@ -1,4 +1,4 @@
-from database import engine, Session
+from db import engine, Session
 from models import Base, Product, Category, Customer
 from sqlalchemy import select
 import sys
