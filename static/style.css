@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+nav a {
+    margin-right: 12px;
+}
+
+.content {
+    padding-top: 10px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}

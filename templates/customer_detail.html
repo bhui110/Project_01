@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Customer: {{ customer.name }}</h1>
+
+<p><strong>Phone:</strong> {{ customer.phone }}</p>
+
+<a href="{{ url_for('customers') }}">Back to Customers</a>
+
+{% endblock %}

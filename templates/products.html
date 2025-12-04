@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>All Products</h1>
+
+<ul>
+    {% for p in products %}
+        <li>
+            <strong>{{ p.name }}</strong> —
+            ${{ p.price }} |
+            Inventory: {{ p.inventory }} |
+            Category:
+            <a href="{{ url_for('category_detail', name=p.category.name) }}">
+                {{ p.category.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

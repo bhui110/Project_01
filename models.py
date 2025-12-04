@@ -1,11 +1,9 @@
 from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship
 from sqlalchemy import String, DECIMAL, Integer, ForeignKey, DateTime
 from datetime import datetime
+from db import db
 
-class Base(DeclarativeBase):
-    pass
-
-class Product(Base):
+class Product(db.Model):
     __tablename__ = "product"
 
     id = mapped_column(Integer, primary_key=True)
@@ -25,7 +23,7 @@ class Product(Base):
 
 
 
-# class Order(Base):
+# class Order(db.Model):
 #     __tablename__ = "orders"
     
 #     # Should have 2 foreign keys, refering to Customer and Product
@@ -38,7 +36,7 @@ class Product(Base):
 #     # Relations
 
 
-class Customer(Base):
+class Customer(db.Model):
     __tablename__ = "customers"
 
     id = mapped_column(Integer, primary_key=True)
@@ -54,7 +52,7 @@ class Customer(Base):
     def __str__(self):
         return f"The Customer {self.name} has phone number {self.phone}"
     
-class Category(Base):
+class Category(db.Model):
     __tablename__ = "categories"
 
     id = mapped_column(Integer, primary_key=True)
