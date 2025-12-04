@@ -23,9 +23,11 @@ def import_products():
     with app.app_context():
         print("Importing products...")
 
+        # read csv file
         with open("data/products.csv", newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
 
+            # looks over each item in the dict (csv) and extracts the columns into python types
             for row in reader:
                 name = row["name"]
                 price = float(row["price"])
