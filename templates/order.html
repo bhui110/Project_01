@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <h1>Order #{{ order.id }}</h1>
+
+  <p>
+    <strong>Customer:</strong>
+    <a href="{{ url_for('customer_detail', id=order.customer.id) }}">
+      {{ order.customer.name }}
+    </a>
+  </p>
+
+  <p><strong>Created:</strong> {{ order.created.strftime("%Y-%m-%d %H:%M") }}</p>
+
+  {% if order.completed %}
+    <p><strong>Completed:</strong> {{ order.completed }}</p>
+    <p><strong>Total Amount:</strong> ${{ order.amount }}</p>
+    <p class="text-success fw-bold">This order has been completed.</p>
+  {% else %}
+    <p class="text-danger fw-bold">This order is pending.</p>
+  {% endif %}
+
+  <h3 class="mt-4">Items</h3>
+
+  <table class="table table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>In Stock</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for po in order.items %}
+      <tr>
+        <td>{{ po.product.name }}</td>
+        <td>${{ po.product.price }}</td>
+        <td>{{ po.quantity }}</td>
+        <td>{{ po.product.inventory }}</td>
+
+        {% if po.product.inventory < po.quantity %}
+          <td class="text-danger fw-bold">Not enough stock</td>
+        {% else %}
+          <td class="text-success fw-bold">OK</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- ESTIMATED TOTAL -->
+  <p class="fw-bold">Estimated Total: ${{ order.estimate() }}</p>
+
+  <!-- COMPLETE ORDER BUTTON -->
+  {% if not order.completed %}
+  <form method="post" action="{{ url_for('complete_order', id=order.id) }}">
+    <button class="btn btn-success" type="submit">Complete Order</button>
+  </form>
+  {% endif %}
+
+</div>
+{% endblock %}

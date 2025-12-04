@@ -1,4 +1,4 @@
-from manage import create, drop, import_customers, import_products
+from manage import create, drop, import_customers, import_products, randomOrder
 import sys
 
 def main():
@@ -16,6 +16,8 @@ def main():
         import_products()
     elif command == "import_customers":
         import_customers()
+    elif command == "randomOrder":
+        randomOrder()
     else:
         print("Invalid command.")
 

@@ -23,18 +23,59 @@ class Product(db.Model):
 
 
 
-# class Order(db.Model):
-#     __tablename__ = "orders"
+class Order(db.Model):
+    __tablename__ = "orders"
+
+    id = mapped_column(Integer, primary_key=True)
+
+    customer_id = mapped_column(Integer, ForeignKey("customers.id"))
+    customer = relationship("Customer", back_populates="orders")
     
-#     # Should have 2 foreign keys, refering to Customer and Product
-#     products = mapped_column(ForeignKey("products.id"))
-#     customer = mapped_column(ForeignKey("customers.id"))
+    items = relationship('ProductOrder', back_populates='order')
 
-#     price = mapped_column(float)
-#     created = mapped_column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+    created = mapped_column(db.DateTime, nullable=False, default=db.func.now())
+    completed = mapped_column(db.DateTime, nullable=True, default=None)
+    amount = mapped_column(db.DECIMAL(6, 2), nullable=True, default=None)
 
-#     # Relations
+    def estimate(self):
+        total = 0
+        for po in self.items:
+            one = po.product.price * po.quantity
+            total = total + one
+        return total
+    
+    def complete(self):
+        # Check inventory availability
+        for po in self.items:
+            if po.product.inventory < po.quantity:
+                raise ValueError(
+                    f"Not enough inventory for {po.product.name}! "
+                    f"Requested {po.quantity}, available {po.product.inventory}"
+                )
 
+        # Subtract inventory
+        for po in self.items:
+            po.product.inventory -= po.quantity
+
+        # Set completed time
+        self.completed = db.func.now()
+
+        # Compute amount
+        self.amount = self.estimate()
+
+
+
+class ProductOrder(db.Model):
+    # Product foreign key
+    product_id = mapped_column(db.ForeignKey("product.id"), primary_key=True)
+    # Order foreign key
+    order_id = mapped_column(db.ForeignKey("orders.id"), primary_key=True)
+    # This is how many items we want in this order
+    quantity = mapped_column(db.Integer, nullable=False)
+
+    # Relationships and backreferences for SQL Alchemy
+    product = relationship('Product')
+    order = relationship('Order', back_populates='items')
 
 class Customer(db.Model):
     __tablename__ = "customers"
@@ -44,7 +85,13 @@ class Customer(db.Model):
     phone = mapped_column(String)
 
     # one to many
-    # orders = relationship("Order", back_populates="Customers")
+    orders = relationship("Order", back_populates="customer")
+
+    def pending_orders(self):
+        return [o for o in self.orders if o.completed is None]
+
+    def completed_orders(self):
+        return [o for o in self.orders if o.completed is not None]
 
     def __repr__(self):
         return f"[Customer: id={self.id}, name={self.name}, phone={self.phone}]"

@@ -1,7 +1,10 @@
+from random import randint, random
+from datetime import datetime as dt
+from datetime import timedelta
 from app import app
 from db import db
-from models import Product, Category, Customer
-from sqlalchemy import select
+from models import Product, Category, Customer, Order, ProductOrder
+from sqlalchemy import func, select
 import csv
 import sys
 
@@ -68,3 +71,42 @@ def import_customers():
 
         db.session.commit()
         print("Customers imported!")
+
+def randomOrder():
+    with app.app_context():
+        for i in range(5):
+
+            # Random customer
+            customer = db.session.execute(
+                select(Customer).order_by(func.random())
+            ).scalar()
+
+            # Create order with random created date
+            created_time = (
+                dt.now()
+                - timedelta(
+                    days=randint(1, 3),
+                    hours=randint(0, 15),
+                    minutes=randint(0, 30),
+                )
+            )
+
+            order = Order(customer=customer, created=created_time)
+            db.session.add(order)
+
+            # Pick 4–6 random products
+            num_prods = randint(4, 6)
+            products = db.session.execute(
+                select(Product).order_by(func.random()).limit(num_prods)
+            ).scalars()
+
+            # Create ProductOrder items
+            for p in products:
+                qty = randint(1, 5)
+                po = ProductOrder(product=p, quantity=qty, order=order)
+                db.session.add(po)
+
+        db.session.commit()
+        print("Random orders generated!")
+
+    

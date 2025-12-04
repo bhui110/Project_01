@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-danger">Error</h1>
+  <p>{{ message }}</p>
+
+  <a href="{{ request.referrer or url_for('orders') }}" class="btn btn-secondary mt-3">
+    Go Back
+  </a>
+</div>
+{% endblock %}

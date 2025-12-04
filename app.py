@@ -1,7 +1,7 @@
 from pathlib import Path
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 from db import db
-from models import Product, Category, Customer
+from models import Product, Category, Customer, Order, ProductOrder
 from sqlalchemy import select
 
 app = Flask(__name__)
@@ -53,6 +53,28 @@ def customer_detail(id):
         return f"Customer with ID {id} not found", 404
 
     return render_template("customer_detail.html", customer=customer)
+
+@app.route("/orders")
+def orders():
+    all_orders = db.session.execute(db.select(Order)).scalars()
+    return render_template("orders.html", orders=all_orders)
+
+@app.route("/orders/<int:id>")
+def order(id):
+    order_obj = db.session.get(Order, id)
+    return render_template("order.html", order=order_obj)
+
+@app.route("/orders/<int:id>/complete", methods=["POST"])
+def complete_order(id):
+    order_obj = db.session.get(Order, id)
+
+    try:
+        order_obj.complete()
+        db.session.commit()
+    except ValueError as e:
+        return render_template("error.html", message=str(e)), 409
+
+    return redirect(url_for("order", id=id))
 
 if __name__ == "__main__":
     app.run(debug=True, port=8888)
