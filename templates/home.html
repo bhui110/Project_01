@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Welcome to the Store</h1>
-<p>Select a page from the navigation menu.</p>
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+<div id="introduction">
+    <h1>Welcome to the Store</h1>
+    <p>A webpage dedicated to record your stores inventory, customer base, and product!</p>
+</div>
+<div class="warehouse">
+    <img src="{{ url_for('static', filename='warehouse.png') }}" alt="Warehouse Logo">
+</div>
 {% endblock %}

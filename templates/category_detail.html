@@ -5,11 +5,20 @@
 
 {% if category.products %}
 <ul>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>In-Stock</th>
+        </tr>
     {% for p in category.products %}
-        <li>
-            <strong>{{ p.name }}</strong> — ${{ p.price }} ({{ p.inventory }} in stock)
-        </li>
+        <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>${{ p.price }}</td>
+            <td>{{ p.inventory }}</td>
+        </tr>
     {% endfor %}
+    </table>
 </ul>
 {% else %}
 <p>No products in this category.</p>

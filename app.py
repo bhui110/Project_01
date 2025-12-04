@@ -1,5 +1,5 @@
 from pathlib import Path
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from db import db
 from models import Product, Category, Customer
 from sqlalchemy import select

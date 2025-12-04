@@ -4,14 +4,22 @@
 <h1>All Categories</h1>
 
 <ul>
-    {% for c in categories %}
-        <li>
-            <a href="{{ url_for('category_detail', name=c.name) }}">
-                {{ c.name }}
-            </a>
-            ({{ c.products|length }} products)
-        </li>
-    {% endfor %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>In-stock</th>
+        </tr>
+        {% for c in categories %}
+        <tr>
+            <td>
+                <a href="{{ url_for('category_detail', name=c.name) }}">
+                    {{ c.name }}
+                </a>
+            </td>
+            <td>{{ c.products|length }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </ul>
 
 {% endblock %}
